@@ -10,17 +10,18 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "Product name is required")
     private String name;
 
+    @NotBlank(message = "Reference is required")
     private String reference;
 
-    @Positive(message = "Price must be positive")
+    @Positive(message = "Price must be greater than 0")
     private double price;
 
+    @Min(value = 0, message = "Stock cannot be negative")
     private int quantityStock;
 
-    // getters & setters
     public Long getId() {
         return id;
     }

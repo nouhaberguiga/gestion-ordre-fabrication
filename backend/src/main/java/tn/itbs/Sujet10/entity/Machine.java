@@ -1,6 +1,7 @@
 package tn.itbs.Sujet10.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Machine {
@@ -9,20 +10,17 @@ public class Machine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Machine name is required")
     private String name;
 
+    @NotBlank(message = "Machine type is required")
     private String type;
 
-    private String status; // AVAILABLE / MAINTENANCE
-
-    // GETTERS & SETTERS
+    @NotBlank(message = "Machine status is required")
+    private String status;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -31,6 +29,10 @@ public class Machine {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getType() {

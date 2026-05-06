@@ -23,55 +23,94 @@ public class OrderService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    // =========================
+    // CREATE ORDER
+    // =========================
     public OrderFabrication createOrder(OrderFabrication o,
                                         Long productId,
                                         Long machineId,
                                         List<Long> employeeIds) {
 
-        Product product = productRepository.findById(productId).orElse(null);
-        Machine machine = machineRepository.findById(machineId).orElse(null);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        Machine machine = machineRepository.findById(machineId)
+                .orElseThrow(() -> new RuntimeException("Machine not found"));
+
         List<Employee> employees = employeeRepository.findAllById(employeeIds);
+
+        if (employees.isEmpty()) {
+            throw new RuntimeException("Employees list is empty");
+        }
 
         o.setProduct(product);
         o.setMachine(machine);
         o.setEmployees(employees);
-
         o.setStatus("CREATED");
 
         return orderRepository.save(o);
     }
 
+    // =========================
+    // GET ALL
+    // =========================
     public List<OrderFabrication> getAll() {
         return orderRepository.findAll();
     }
 
-    public OrderFabrication startOrder(Long id) {
-        OrderFabrication o = orderRepository.findById(id).orElse(null);
-
-        if (o != null) {
-            o.setStatus("IN_PROGRESS");
-
-            Machine m = o.getMachine();
-            m.setStatus("BUSY");
-
-            return orderRepository.save(o);
-        }
-
-        return null;
+    // =========================
+    // GET BY ID
+    // =========================
+    public OrderFabrication getById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
     }
 
-    public OrderFabrication finishOrder(Long id) {
-        OrderFabrication o = orderRepository.findById(id).orElse(null);
+    // =========================
+    // DELETE
+    // =========================
+    public void delete(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new RuntimeException("Order not found");
+        }
+        orderRepository.deleteById(id);
+    }
 
-        if (o != null) {
-            o.setStatus("DONE");
+    // =========================
+    // START ORDER
+    // =========================
+    public OrderFabrication startOrder(Long id) {
 
-            Machine m = o.getMachine();
-            m.setStatus("AVAILABLE");
+        OrderFabrication o = getById(id);
 
-            return orderRepository.save(o);
+        if ("IN_PROGRESS".equals(o.getStatus())) {
+            throw new RuntimeException("Order already started");
         }
 
-        return null;
+        o.setStatus("IN_PROGRESS");
+
+        Machine m = o.getMachine();
+        m.setStatus("BUSY");
+
+        return orderRepository.save(o);
+    }
+
+    // =========================
+    // FINISH ORDER
+    // =========================
+    public OrderFabrication finishOrder(Long id) {
+
+        OrderFabrication o = getById(id);
+
+        if (!"IN_PROGRESS".equals(o.getStatus())) {
+            throw new RuntimeException("Order must be IN_PROGRESS to finish");
+        }
+
+        o.setStatus("DONE");
+
+        Machine m = o.getMachine();
+        m.setStatus("AVAILABLE");
+
+        return orderRepository.save(o);
     }
 }

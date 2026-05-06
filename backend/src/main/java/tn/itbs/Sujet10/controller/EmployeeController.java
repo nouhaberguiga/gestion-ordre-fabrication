@@ -2,6 +2,8 @@ package tn.itbs.Sujet10.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +17,9 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    // CREATE
+    // CREATE (avec validation)
     @PostMapping
-    public Employee create(@RequestBody Employee e) {
+    public Employee create(@Valid @RequestBody Employee e) {
         return employeeService.save(e);
     }
 
@@ -27,15 +29,33 @@ public class EmployeeController {
         return employeeService.getAll();
     }
 
-    // AVAILABLE
+    // GET BY ID
+    @GetMapping("/{id}")
+    public Employee getById(@PathVariable Long id) {
+        return employeeService.getById(id);
+    }
+
+    // UPDATE
+    @PutMapping("/{id}")
+    public Employee update(@PathVariable Long id, @Valid @RequestBody Employee e) {
+        return employeeService.update(id, e);
+    }
+
+    // SET AVAILABLE
     @PutMapping("/available/{id}")
     public Employee setAvailable(@PathVariable Long id) {
         return employeeService.setAvailable(id);
     }
 
-    // UNAVAILABLE
+    // SET UNAVAILABLE
     @PutMapping("/unavailable/{id}")
     public Employee setUnavailable(@PathVariable Long id) {
         return employeeService.setUnavailable(id);
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        employeeService.delete(id);
     }
 }

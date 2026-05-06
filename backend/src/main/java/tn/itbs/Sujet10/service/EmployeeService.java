@@ -25,11 +25,27 @@ public class EmployeeService {
         return employeeRepository.findById(id).orElse(null);
     }
 
+    // ✅ UPDATE ajouté
+    public Employee update(Long id, Employee e) {
+        Employee existing = employeeRepository.findById(id).orElse(null);
+
+        if (existing != null) {
+            existing.setFirstName(e.getFirstName());
+            existing.setLastName(e.getLastName());
+            existing.setRole(e.getRole());
+            existing.setAvailable(e.isAvailable());
+
+            return employeeRepository.save(existing);
+        }
+
+        return null;
+    }
+
     public void delete(Long id) {
         employeeRepository.deleteById(id);
     }
 
-    // logique métier simple
+    // logique métier
     public Employee setAvailable(Long id) {
         Employee e = employeeRepository.findById(id).orElse(null);
         if (e != null) {

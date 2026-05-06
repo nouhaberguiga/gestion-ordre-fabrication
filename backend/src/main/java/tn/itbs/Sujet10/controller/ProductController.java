@@ -1,6 +1,7 @@
 package tn.itbs.Sujet10.controller;
 
 import java.util.List;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ProductController {
 
     // CREATE
     @PostMapping
-    public Product create(@RequestBody Product p) {
+    public Product create(@Valid @RequestBody Product p) {
         return productService.save(p);
     }
 
@@ -29,19 +30,19 @@ public class ProductController {
 
     // GET BY ID
     @GetMapping("/{id}")
-    public Product getById(@PathVariable Long id) {
+    public Product getById( @PathVariable Long id) {
         return productService.getById(id);
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public Product update(@PathVariable Long id, @RequestBody Product p) {
+    public Product update( @PathVariable Long id,@Valid  @RequestBody Product p) {
         return productService.update(id, p);
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete( @PathVariable Long id) {
         productService.delete(id);
     }
 }

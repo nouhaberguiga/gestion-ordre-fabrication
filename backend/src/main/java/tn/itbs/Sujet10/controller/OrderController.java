@@ -5,12 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import tn.itbs.Sujet10.entity.OrderFabrication;
 import tn.itbs.Sujet10.service.OrderService;
 
 @RestController
-@RequestMapping("/api/orders") // ✅ IMPORTANT (standard REST)
-@CrossOrigin("*") // (utile si Angular/React)
+@RequestMapping("/api/orders")
+@CrossOrigin("*")
 public class OrderController {
 
     @Autowired
@@ -21,10 +24,13 @@ public class OrderController {
     // =========================
     @PostMapping
     public OrderFabrication create(
-            @RequestBody OrderFabrication o,
-            @RequestParam Long productId,
-            @RequestParam Long machineId,
-            @RequestParam List<Long> employeeIds
+            @Valid @RequestBody OrderFabrication o,
+
+            @RequestParam @NotNull(message = "productId is required") Long productId,
+
+            @RequestParam @NotNull(message = "machineId is required") Long machineId,
+
+            @RequestParam @NotEmpty(message = "employeeIds list is required") List<Long> employeeIds
     ) {
         return orderService.createOrder(o, productId, machineId, employeeIds);
     }
@@ -35,6 +41,14 @@ public class OrderController {
     @GetMapping
     public List<OrderFabrication> getAll() {
         return orderService.getAll();
+    }
+
+    // =========================
+    // GET BY ID (important)
+    // =========================
+    @GetMapping("/{id}")
+    public OrderFabrication getById(@PathVariable Long id) {
+        return orderService.getById(id);
     }
 
     // =========================
@@ -51,5 +65,13 @@ public class OrderController {
     @PutMapping("/finish/{id}")
     public OrderFabrication finish(@PathVariable Long id) {
         return orderService.finishOrder(id);
+    }
+
+    // =========================
+    // DELETE (bonus utile)
+    // =========================
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        orderService.delete(id);
     }
 }
