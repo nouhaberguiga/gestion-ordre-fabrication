@@ -1,5 +1,7 @@
 package tn.itbs.Sujet10.repository;
 
-public interface OrderRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import tn.itbs.Sujet10.entity.OrderFabrication;
 
+public interface OrderRepository extends JpaRepository<OrderFabrication, Long> {
 }
