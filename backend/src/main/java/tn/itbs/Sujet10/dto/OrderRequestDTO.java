@@ -2,15 +2,24 @@ package tn.itbs.Sujet10.dto;
 
 import java.util.List;
 
+import jakarta.validation.constraints.*;
+
 public class OrderRequestDTO {
 
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be greater than 0")
     private Integer quantity;
 
+    @NotNull(message = "Product ID is required")
     private Long productId;
 
+    @NotNull(message = "Machine ID is required")
     private Long machineId;
 
+    @NotEmpty(message = "Employee list must not be empty")
     private List<Long> employeeIds;
+
+
 
     // GETTERS & SETTERS
 
