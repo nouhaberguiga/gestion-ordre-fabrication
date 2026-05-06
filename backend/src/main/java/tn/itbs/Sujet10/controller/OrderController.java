@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import tn.itbs.Sujet10.dto.OrderRequestDTO;
 import tn.itbs.Sujet10.entity.OrderFabrication;
 import tn.itbs.Sujet10.service.OrderService;
 
@@ -20,19 +19,11 @@ public class OrderController {
     private OrderService orderService;
 
     // =========================
-    // CREATE ORDER
+    // CREATE ORDER (DTO)
     // =========================
     @PostMapping
-    public OrderFabrication create(
-            @Valid @RequestBody OrderFabrication o,
-
-            @RequestParam @NotNull(message = "productId is required") Long productId,
-
-            @RequestParam @NotNull(message = "machineId is required") Long machineId,
-
-            @RequestParam @NotEmpty(message = "employeeIds list is required") List<Long> employeeIds
-    ) {
-        return orderService.createOrder(o, productId, machineId, employeeIds);
+    public OrderFabrication create(@Valid @RequestBody OrderRequestDTO request) {
+        return orderService.createOrder(request);
     }
 
     // =========================
@@ -44,7 +35,7 @@ public class OrderController {
     }
 
     // =========================
-    // GET BY ID (important)
+    // GET BY ID
     // =========================
     @GetMapping("/{id}")
     public OrderFabrication getById(@PathVariable Long id) {
@@ -68,7 +59,7 @@ public class OrderController {
     }
 
     // =========================
-    // DELETE (bonus utile)
+    // DELETE
     // =========================
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {

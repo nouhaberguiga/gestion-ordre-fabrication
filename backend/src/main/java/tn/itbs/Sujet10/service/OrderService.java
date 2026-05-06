@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.itbs.Sujet10.dto.OrderRequestDTO;
 import tn.itbs.Sujet10.entity.*;
 import tn.itbs.Sujet10.repository.*;
 
@@ -24,25 +25,24 @@ public class OrderService {
     private EmployeeRepository employeeRepository;
 
     // =========================
-    // CREATE ORDER
+    // CREATE ORDER (DTO VERSION)
     // =========================
-    public OrderFabrication createOrder(OrderFabrication o,
-                                        Long productId,
-                                        Long machineId,
-                                        List<Long> employeeIds) {
+    public OrderFabrication createOrder(OrderRequestDTO request) {
 
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Machine machine = machineRepository.findById(machineId)
+        Machine machine = machineRepository.findById(request.getMachineId())
                 .orElseThrow(() -> new RuntimeException("Machine not found"));
 
-        List<Employee> employees = employeeRepository.findAllById(employeeIds);
+        List<Employee> employees = employeeRepository.findAllById(request.getEmployeeIds());
 
         if (employees.isEmpty()) {
             throw new RuntimeException("Employees list is empty");
         }
 
+        OrderFabrication o = new OrderFabrication();
+        o.setQuantity(request.getQuantity());
         o.setProduct(product);
         o.setMachine(machine);
         o.setEmployees(employees);
