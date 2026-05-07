@@ -16,8 +16,8 @@ public class Machine {
     @NotBlank(message = "Machine type is required")
     private String type;
 
-    @NotBlank(message = "Machine status is required")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MachineStatus status;
 
     public Long getId() {
         return id;
@@ -43,11 +43,11 @@ public class Machine {
         this.type = type;
     }
 
-    public String getStatus() {
+    public MachineStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(MachineStatus status) {
         this.status = status;
     }
 }

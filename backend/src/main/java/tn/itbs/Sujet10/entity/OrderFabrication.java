@@ -16,21 +16,28 @@ public class OrderFabrication {
     @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 
-    private String status;
+    // 🔥 STATUS PROPRE AVEC ENUM
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
+    // 🔥 RELATION PRODUCT
     @ManyToOne
     @JoinColumn(name = "product_id")
     @NotNull(message = "Product is required")
     private Product product;
 
+    // 🔥 RELATION MACHINE (UNE SEULE FOIS)
     @ManyToOne
     @JoinColumn(name = "machine_id")
     @NotNull(message = "Machine is required")
     private Machine machine;
 
+    // 🔥 EMPLOYEES
     @ManyToMany
     @NotNull(message = "Employees are required")
     private List<Employee> employees;
+
+    // GETTERS & SETTERS
 
     public Long getId() {
         return id;
@@ -40,7 +47,7 @@ public class OrderFabrication {
         return quantity;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
@@ -64,7 +71,7 @@ public class OrderFabrication {
         this.quantity = quantity;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 

@@ -25,7 +25,7 @@ public class OrderService {
     private EmployeeRepository employeeRepository;
 
     // =========================
-    // CREATE ORDER (DTO VERSION)
+    // CREATE ORDER
     // =========================
     public OrderFabrication createOrder(OrderRequestDTO request) {
 
@@ -35,20 +35,25 @@ public class OrderService {
         Machine machine = machineRepository.findById(request.getMachineId())
                 .orElseThrow(() -> new RuntimeException("Machine not found"));
 
+        // 🔥 CHECK MACHINE AVAILABLE
+        if (machine.getStatus() != MachineStatus.AVAILABLE) {
+            throw new RuntimeException("Machine not available");
+        }
+
         List<Employee> employees = employeeRepository.findAllById(request.getEmployeeIds());
 
         if (employees.isEmpty()) {
             throw new RuntimeException("Employees list is empty");
         }
 
-        OrderFabrication o = new OrderFabrication();
-        o.setQuantity(request.getQuantity());
-        o.setProduct(product);
-        o.setMachine(machine);
-        o.setEmployees(employees);
-        o.setStatus("CREATED");
+        OrderFabrication order = new OrderFabrication();
+        order.setQuantity(request.getQuantity());
+        order.setProduct(product);
+        order.setMachine(machine);
+        order.setEmployees(employees);
+        order.setStatus(OrderStatus.PENDING);
 
-        return orderRepository.save(o);
+        return orderRepository.save(order);
     }
 
     // =========================
@@ -81,18 +86,21 @@ public class OrderService {
     // =========================
     public OrderFabrication startOrder(Long id) {
 
-        OrderFabrication o = getById(id);
+        OrderFabrication order = getById(id);
 
-        if ("IN_PROGRESS".equals(o.getStatus())) {
-            throw new RuntimeException("Order already started");
+        if (order.getStatus() != OrderStatus.PENDING) {
+            throw new RuntimeException("Order already started or finished");
         }
 
-        o.setStatus("IN_PROGRESS");
+        Machine machine = order.getMachine();
 
-        Machine m = o.getMachine();
-        m.setStatus("BUSY");
+        // 🔥 MACHINE OCCUPÉE
+        machine.setStatus(MachineStatus.IN_USE);
 
-        return orderRepository.save(o);
+        order.setStatus(OrderStatus.IN_PROGRESS);
+
+        machineRepository.save(machine);
+        return orderRepository.save(order);
     }
 
     // =========================
@@ -100,17 +108,20 @@ public class OrderService {
     // =========================
     public OrderFabrication finishOrder(Long id) {
 
-        OrderFabrication o = getById(id);
+        OrderFabrication order = getById(id);
 
-        if (!"IN_PROGRESS".equals(o.getStatus())) {
-            throw new RuntimeException("Order must be IN_PROGRESS to finish");
+        if (order.getStatus() != OrderStatus.IN_PROGRESS) {
+            throw new RuntimeException("Order not started");
         }
 
-        o.setStatus("DONE");
+        Machine machine = order.getMachine();
 
-        Machine m = o.getMachine();
-        m.setStatus("AVAILABLE");
+        // 🔥 MACHINE LIBRE
+        machine.setStatus(MachineStatus.AVAILABLE);
 
-        return orderRepository.save(o);
+        order.setStatus(OrderStatus.FINISHED);
+
+        machineRepository.save(machine);
+        return orderRepository.save(order);
     }
 }
