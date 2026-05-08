@@ -2,8 +2,10 @@ package tn.itbs.Sujet10.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -13,77 +15,59 @@ public class OrderFabrication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Project name is required")
+    private String project;
+
     @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 
-    // 🔥 STATUS PROPRE AVEC ENUM
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private LocalDate date;
 
-    // 🔥 RELATION PRODUCT
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.PENDING;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     @NotNull(message = "Product is required")
     private Product product;
 
-    // 🔥 RELATION MACHINE (UNE SEULE FOIS)
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "machine_id")
     @NotNull(message = "Machine is required")
     private Machine machine;
 
-    // 🔥 EMPLOYEES
     @ManyToMany
-    @NotNull(message = "Employees are required")
+    @JoinTable(
+        name = "order_employee",
+        joinColumns = @JoinColumn(name = "order_id"),
+        inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
     private List<Employee> employees;
 
     // GETTERS & SETTERS
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public int getQuantity() {
-        return quantity;
-    }
+    public String getProject() { return project; }
+    public void setProject(String project) { this.project = project; }
 
-    public OrderStatus getStatus() {
-        return status;
-    }
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    public Product getProduct() {
-        return product;
-    }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public Machine getMachine() {
-        return machine;
-    }
+    public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Machine getMachine() { return machine; }
+    public void setMachine(Machine machine) { this.machine = machine; }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public void setMachine(Machine machine) {
-        this.machine = machine;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
+    public List<Employee> getEmployees() { return employees; }
+    public void setEmployees(List<Employee> employees) { this.employees = employees; }
 }

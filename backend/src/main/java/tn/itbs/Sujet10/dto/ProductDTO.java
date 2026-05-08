@@ -1,15 +1,9 @@
-package tn.itbs.Sujet10.entity;
+package tn.itbs.Sujet10.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.List;
 
-@Entity
-public class Product {
+public class ProductDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Product name is required")
@@ -28,10 +22,6 @@ public class Product {
     private int quantityStock;
 
     private String supplier;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "product")
-    private List<OrderFabrication> orders;
 
     // GETTERS & SETTERS
 
@@ -55,7 +45,4 @@ public class Product {
 
     public String getSupplier() { return supplier; }
     public void setSupplier(String supplier) { this.supplier = supplier; }
-
-    public List<OrderFabrication> getOrders() { return orders; }
-    public void setOrders(List<OrderFabrication> orders) { this.orders = orders; }
 }

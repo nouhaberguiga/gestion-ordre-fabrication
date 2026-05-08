@@ -1,10 +1,12 @@
 package tn.itbs.Sujet10.dto;
 
+import jakarta.validation.constraints.*;
 import java.util.List;
 
-import jakarta.validation.constraints.*;
-
 public class OrderRequestDTO {
+
+    @NotBlank(message = "Project name is required")
+    private String project;
 
     @NotNull(message = "Quantity is required")
     @Min(value = 1, message = "Quantity must be greater than 0")
@@ -19,39 +21,20 @@ public class OrderRequestDTO {
     @NotEmpty(message = "Employee list must not be empty")
     private List<Long> employeeIds;
 
-
-
     // GETTERS & SETTERS
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+    public String getProject() { return project; }
+    public void setProject(String project) { this.project = project; }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
 
-    public Long getProductId() {
-        return productId;
-    }
+    public Long getProductId() { return productId; }
+    public void setProductId(Long productId) { this.productId = productId; }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+    public Long getMachineId() { return machineId; }
+    public void setMachineId(Long machineId) { this.machineId = machineId; }
 
-    public Long getMachineId() {
-        return machineId;
-    }
-
-    public void setMachineId(Long machineId) {
-        this.machineId = machineId;
-    }
-
-    public List<Long> getEmployeeIds() {
-        return employeeIds;
-    }
-
-    public void setEmployeeIds(List<Long> employeeIds) {
-        this.employeeIds = employeeIds;
-    }
+    public List<Long> getEmployeeIds() { return employeeIds; }
+    public void setEmployeeIds(List<Long> employeeIds) { this.employeeIds = employeeIds; }
 }

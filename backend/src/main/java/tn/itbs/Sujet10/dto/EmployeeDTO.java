@@ -1,15 +1,9 @@
-package tn.itbs.Sujet10.entity;
+package tn.itbs.Sujet10.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.List;
 
-@Entity
-public class Employee {
+public class EmployeeDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "First name is required")
@@ -21,12 +15,9 @@ public class Employee {
     @NotBlank(message = "Role is required")
     private String role;
 
-    private boolean available = true;
+    private boolean available;
 
-    @ManyToOne
-    @JoinColumn(name = "machine_id")
-    @JsonIgnore
-    private Machine machine;
+    private Long machineId;
 
     // GETTERS & SETTERS
 
@@ -45,6 +36,6 @@ public class Employee {
     public boolean isAvailable() { return available; }
     public void setAvailable(boolean available) { this.available = available; }
 
-    public Machine getMachine() { return machine; }
-    public void setMachine(Machine machine) { this.machine = machine; }
+    public Long getMachineId() { return machineId; }
+    public void setMachineId(Long machineId) { this.machineId = machineId; }
 }

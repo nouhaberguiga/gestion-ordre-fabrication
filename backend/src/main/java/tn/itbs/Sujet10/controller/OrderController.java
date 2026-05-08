@@ -1,13 +1,12 @@
 package tn.itbs.Sujet10.controller;
 
 import java.util.List;
-
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.validation.Valid;
+import tn.itbs.Sujet10.dto.OrderFabricationDTO;
 import tn.itbs.Sujet10.dto.OrderRequestDTO;
-import tn.itbs.Sujet10.entity.OrderFabrication;
+import tn.itbs.Sujet10.mapper.OrderMapper;
 import tn.itbs.Sujet10.service.OrderService;
 
 @RestController
@@ -18,49 +17,39 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // =========================
-    // CREATE ORDER (DTO)
-    // =========================
+    @Autowired
+    private OrderMapper orderMapper;
+
     @PostMapping
-    public OrderFabrication create(@Valid @RequestBody OrderRequestDTO request) {
-        return orderService.createOrder(request);
+    public OrderFabricationDTO create(@Valid @RequestBody OrderRequestDTO request) {
+        return orderMapper.toDto(orderService.createOrder(request));
     }
 
-    // =========================
-    // GET ALL ORDERS
-    // =========================
     @GetMapping
-    public List<OrderFabrication> getAll() {
-        return orderService.getAll();
+    public List<OrderFabricationDTO> getAll() {
+        return orderMapper.toListDto(orderService.getAll());
     }
 
-    // =========================
-    // GET BY ID
-    // =========================
     @GetMapping("/{id}")
-    public OrderFabrication getById(@PathVariable Long id) {
-        return orderService.getById(id);
+    public OrderFabricationDTO getById(@PathVariable Long id) {
+        return orderMapper.toDto(orderService.getById(id));
     }
 
-    // =========================
-    // START ORDER
-    // =========================
     @PutMapping("/start/{id}")
-    public OrderFabrication start(@PathVariable Long id) {
-        return orderService.startOrder(id);
+    public OrderFabricationDTO start(@PathVariable Long id) {
+        return orderMapper.toDto(orderService.startOrder(id));
     }
 
-    // =========================
-    // FINISH ORDER
-    // =========================
     @PutMapping("/finish/{id}")
-    public OrderFabrication finish(@PathVariable Long id) {
-        return orderService.finishOrder(id);
+    public OrderFabricationDTO finish(@PathVariable Long id) {
+        return orderMapper.toDto(orderService.finishOrder(id));
     }
 
-    // =========================
-    // DELETE
-    // =========================
+    @PutMapping("/cancel/{id}")
+    public OrderFabricationDTO cancel(@PathVariable Long id) {
+        return orderMapper.toDto(orderService.cancelOrder(id));
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         orderService.delete(id);

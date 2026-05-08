@@ -1,13 +1,12 @@
 package tn.itbs.Sujet10.controller;
 
 import java.util.List;
-
 import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import tn.itbs.Sujet10.dto.MachineDTO;
 import tn.itbs.Sujet10.entity.Machine;
+import tn.itbs.Sujet10.mapper.MachineMapper;
 import tn.itbs.Sujet10.service.MachineService;
 
 @RestController
@@ -18,57 +17,49 @@ public class MachineController {
     @Autowired
     private MachineService machineService;
 
-    // =========================
-    // CREATE MACHINE
-    // =========================
+    @Autowired
+    private MachineMapper machineMapper;
+
     @PostMapping
-    public Machine create(@Valid @RequestBody Machine m) {
-        return machineService.save(m);
+    public MachineDTO create(@Valid @RequestBody Machine m) {
+        return machineMapper.toDto(machineService.save(m));
     }
 
-    // =========================
-    // GET ALL MACHINES
-    // =========================
     @GetMapping
-    public List<Machine> getAll() {
-        return machineService.getAll();
+    public List<MachineDTO> getAll() {
+        return machineMapper.toListDto(machineService.getAll());
     }
 
-    // =========================
-    // GET BY ID
-    // =========================
     @GetMapping("/{id}")
-    public Machine getById(@PathVariable Long id) {
-        return machineService.getById(id);
+    public MachineDTO getById(@PathVariable Long id) {
+        return machineMapper.toDto(machineService.getById(id));
     }
 
-    // =========================
-    // SET AVAILABLE
-    // =========================
+    @PutMapping("/{id}")
+    public MachineDTO update(@PathVariable Long id, @Valid @RequestBody Machine m) {
+        return machineMapper.toDto(machineService.update(id, m));
+    }
+
     @PutMapping("/available/{id}")
-    public Machine setAvailable(@PathVariable Long id) {
-        return machineService.setAvailable(id);
+    public MachineDTO setAvailable(@PathVariable Long id) {
+        return machineMapper.toDto(machineService.setAvailable(id));
     }
 
-    // =========================
-    // SET MAINTENANCE
-    // =========================
     @PutMapping("/maintenance/{id}")
-    public Machine setMaintenance(@PathVariable Long id) {
-        return machineService.setMaintenance(id);
+    public MachineDTO setMaintenance(@PathVariable Long id) {
+        return machineMapper.toDto(machineService.setMaintenance(id));
     }
 
-    // =========================
-    // SET IN USE (OPTIONNEL MAIS TRÈS UTILE)
-    // =========================
     @PutMapping("/in-use/{id}")
-    public Machine setInUse(@PathVariable Long id) {
-        return machineService.setInUse(id);
+    public MachineDTO setInUse(@PathVariable Long id) {
+        return machineMapper.toDto(machineService.setInUse(id));
     }
 
-    // =========================
-    // DELETE MACHINE
-    // =========================
+    @PutMapping("/broken/{id}")
+    public MachineDTO setBroken(@PathVariable Long id) {
+        return machineMapper.toDto(machineService.setBroken(id));
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         machineService.delete(id);

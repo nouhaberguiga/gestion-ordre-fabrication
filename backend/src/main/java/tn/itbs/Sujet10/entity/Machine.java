@@ -2,6 +2,9 @@ package tn.itbs.Sujet10.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Machine {
@@ -13,41 +16,35 @@ public class Machine {
     @NotBlank(message = "Machine name is required")
     private String name;
 
-    @NotBlank(message = "Machine type is required")
-    private String type;
-
     @Enumerated(EnumType.STRING)
-    private MachineStatus status;
+    private MachineStatus status = MachineStatus.AVAILABLE;
 
-    public Long getId() {
-        return id;
-    }
+    private LocalDate lastMaintenance;
 
-    public String getName() {
-        return name;
-    }
+    @OneToMany(mappedBy = "machine")
+    private List<Employee> employees;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    @JsonManagedReference
+    @OneToMany(mappedBy = "machine")
+    private List<OrderFabrication> orders;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // GETTERS & SETTERS
 
-    public String getType() {
-        return type;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public MachineStatus getStatus() {
-        return status;
-    }
+    public MachineStatus getStatus() { return status; }
+    public void setStatus(MachineStatus status) { this.status = status; }
 
-    public void setStatus(MachineStatus status) {
-        this.status = status;
-    }
+    public LocalDate getLastMaintenance() { return lastMaintenance; }
+    public void setLastMaintenance(LocalDate lastMaintenance) { this.lastMaintenance = lastMaintenance; }
+
+    public List<Employee> getEmployees() { return employees; }
+    public void setEmployees(List<Employee> employees) { this.employees = employees; }
+
+    public List<OrderFabrication> getOrders() { return orders; }
+    public void setOrders(List<OrderFabrication> orders) { this.orders = orders; }
 }

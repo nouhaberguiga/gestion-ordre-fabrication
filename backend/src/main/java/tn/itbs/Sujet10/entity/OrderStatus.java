@@ -1,7 +1,9 @@
 package tn.itbs.Sujet10.entity;
 
 public enum OrderStatus {
-    PENDING,
+	CREATED,  
+	PENDING,
     IN_PROGRESS,
-    FINISHED
+    COMPLETED,
+    CANCELLED
 }

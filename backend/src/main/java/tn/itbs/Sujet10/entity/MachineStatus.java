@@ -1,7 +1,8 @@
 package tn.itbs.Sujet10.entity;
 
 public enum MachineStatus {
-	AVAILABLE,
+    AVAILABLE,
     IN_USE,
-    MAINTENANCE
+    MAINTENANCE,
+    BROKEN
 }
