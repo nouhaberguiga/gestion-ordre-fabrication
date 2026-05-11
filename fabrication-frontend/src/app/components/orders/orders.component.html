@@ -125,12 +125,10 @@
 
       <th>ID</th>
       <th>Projet</th>
-      <th>Quantité</th>
       <th>Produit</th>
-      <th>Machine</th>
-      <th>Employés machine</th>
-      <th>Statut</th>
-      <th>Actions</th>
+      <th>Quantité</th>
+      <th>Date</th>
+      <th>État</th>
 
     </tr>
 
@@ -144,58 +142,24 @@
 
       <td>{{ o.project }}</td>
 
-      <td>{{ o.quantity }}</td>
-
       <td>{{ o.productName }}</td>
 
-      <td>{{ o.machineName }}</td>
+      <td>{{ o.quantity }}</td>
 
-      <td>{{ getEmployeesByMachineName(o.machineId) }}</td>
+      <td>{{ o.date ? (o.date | date:'dd/MM/yyyy') : '-' }}</td>
 
       <!-- STATUS -->
       <td>
 
-        <span
-          class="badge"
-          [class.bg-warning]="o.status === 'PENDING'"
-          [class.bg-primary]="o.status === 'IN_PROGRESS'"
-          [class.bg-success]="o.status === 'FINISHED'"
+        <select
+          class="form-select form-select-sm"
+          [ngModel]="o.status"
+          (ngModelChange)="changeStatus(o, $event)"
         >
-          {{ o.status }}
-        </span>
-
-      </td>
-
-      <!-- ACTIONS -->
-      <td>
-
-        <button
-          class="btn btn-sm btn-warning me-1"
-          (click)="openEdit(o)"
-        >
-          Modifier
-        </button>
-
-        <button
-          class="btn btn-sm btn-danger me-1"
-          (click)="delete(o.id!)"
-        >
-          Supprimer
-        </button>
-
-        <button
-          class="btn btn-sm btn-info me-1"
-          (click)="start(o.id!)"
-        >
-          Start
-        </button>
-
-        <button
-          class="btn btn-sm btn-success"
-          (click)="finish(o.id!)"
-        >
-          Finish
-        </button>
+          <option *ngFor="let status of orderStatuses" [ngValue]="status">
+            {{ getStatusLabel(status) }}
+          </option>
+        </select>
 
       </td>
 
@@ -204,7 +168,7 @@
     <!-- EMPTY -->
     <tr *ngIf="orders.length === 0">
 
-      <td colspan="8" class="text-center text-muted">
+      <td colspan="6" class="text-center text-muted">
         Aucun ordre.
       </td>
 

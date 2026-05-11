@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.itbs.Sujet10.dto.OrderFabricationDTO;
 import tn.itbs.Sujet10.dto.OrderRequestDTO;
+import tn.itbs.Sujet10.entity.OrderStatus;
 import tn.itbs.Sujet10.mapper.OrderMapper;
 import tn.itbs.Sujet10.service.OrderService;
 
@@ -44,6 +45,24 @@ public class OrderController {
     public OrderFabricationDTO finish(@PathVariable Long id) {
         return orderMapper.toDto(orderService.finishOrder(id));
     }
+
+    @PutMapping("/hold/{id}")
+    public OrderFabricationDTO hold(@PathVariable Long id) {
+        return orderMapper.toDto(orderService.holdOrder(id));
+    }
+
+    @PutMapping("/resume/{id}")
+    public OrderFabricationDTO resume(@PathVariable Long id) {
+        return orderMapper.toDto(orderService.resumeOrder(id));
+    }
+
+    @PutMapping("/{id}/status")
+public OrderFabricationDTO updateStatus(
+        @PathVariable Long id,
+        @RequestParam OrderStatus status) {
+
+    return orderMapper.toDto(orderService.updateStatus(id, status));
+}
 
     @PutMapping("/cancel/{id}")
     public OrderFabricationDTO cancel(@PathVariable Long id) {

@@ -24,6 +24,7 @@ export class OrdersComponent implements OnInit {
   showForm = false;
   editing = false;
   editId: number | null = null;
+  orderStatuses = ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'ON_HOLD'];
 
   form: {
     project: string;
@@ -174,6 +175,26 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  hold(id: number) {
+    this.orderService.hold(id).subscribe({
+      next: () => {
+        this.alert('Ordre mis en pause', 'success');
+        this.load();
+      },
+      error: () => this.alert('Erreur de mise en pause', 'danger')
+    });
+  }
+
+  resume(id: number) {
+    this.orderService.resume(id).subscribe({
+      next: () => {
+        this.alert('Ordre repris', 'success');
+        this.load();
+      },
+      error: () => this.alert('Erreur de reprise', 'danger')
+    });
+  }
+
   cancel(id: number) {
     this.orderService.cancel(id).subscribe({
       next: () => {
@@ -183,6 +204,22 @@ export class OrdersComponent implements OnInit {
       error: () => this.alert('Erreur d\'annulation', 'danger')
     });
   }
+
+  changeStatus(order: Order, status: string) {
+  if (!order.id || order.status === status) return;
+
+  this.orderService.updateStatus(order.id, status).subscribe({
+    next: updated => {
+      order.status = updated.status;
+      this.alert('État mis à jour', 'success');
+      this.load(); // ✅ correct ici
+    },
+    error: err => {
+      this.alert(err.error?.message || 'Erreur de modification de l\'état', 'danger');
+      this.load();
+    }
+  });
+}
 
   alert(text: string, type = 'success') {
     this.msg = text;
@@ -217,6 +254,18 @@ export class OrdersComponent implements OnInit {
       .map(employee => `${employee.firstName} ${employee.lastName}`);
 
     return assignedEmployees.length ? assignedEmployees.join(', ') : 'Aucun employé assigné';
+  }
+
+  getStatusLabel(status?: string): string {
+    const labels: Record<string, string> = {
+      PENDING: 'Créé',
+      IN_PROGRESS: 'En cours',
+      COMPLETED: 'Terminé',
+      CANCELLED: 'Annulé',
+      ON_HOLD: 'En pause'
+    };
+
+    return status ? labels[status] || status : '-';
   }
 
   onEmployeeChange(employeeId: number, checked: boolean) {
