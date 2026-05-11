@@ -9,48 +9,58 @@ import org.springframework.web.bind.annotation.*;
 
 import tn.itbs.Sujet10.entity.Employee;
 import tn.itbs.Sujet10.service.EmployeeService;
+import tn.itbs.Sujet10.dto.EmployeeDTO;
+import tn.itbs.Sujet10.mapper.EmployeeMapper;
 
 @RestController
 @RequestMapping("/employees")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
 
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
     // CREATE (avec validation)
     @PostMapping
-    public Employee create(@Valid @RequestBody Employee e) {
-        return employeeService.save(e);
+    public EmployeeDTO create(@Valid @RequestBody EmployeeDTO dto) {
+        Employee employee = employeeMapper.fromDto(dto);
+        Employee saved = employeeService.saveWithMachine(employee, dto.getMachineId());
+        return employeeMapper.toDto(saved);
     }
 
     // GET ALL
     @GetMapping
-    public List<Employee> getAll() {
-        return employeeService.getAll();
+    public List<EmployeeDTO> getAll() {
+        return employeeMapper.toListDto(employeeService.getAll());
     }
 
     // GET BY ID
     @GetMapping("/{id}")
-    public Employee getById(@PathVariable Long id) {
-        return employeeService.getById(id);
+    public EmployeeDTO getById(@PathVariable Long id) {
+        return employeeMapper.toDto(employeeService.getById(id));
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public Employee update(@PathVariable Long id, @Valid @RequestBody Employee e) {
-        return employeeService.update(id, e);
+    public EmployeeDTO update(@PathVariable Long id, @Valid @RequestBody EmployeeDTO dto) {
+        Employee employee = employeeMapper.fromDto(dto);
+        Employee updated = employeeService.updateWithMachine(id, employee, dto.getMachineId());
+        return employeeMapper.toDto(updated);
     }
 
     // SET AVAILABLE
     @PutMapping("/available/{id}")
-    public Employee setAvailable(@PathVariable Long id) {
-        return employeeService.setAvailable(id);
+    public EmployeeDTO setAvailable(@PathVariable Long id) {
+        return employeeMapper.toDto(employeeService.setAvailable(id));
     }
 
     // SET UNAVAILABLE
     @PutMapping("/unavailable/{id}")
-    public Employee setUnavailable(@PathVariable Long id) {
-        return employeeService.setUnavailable(id);
+    public EmployeeDTO setUnavailable(@PathVariable Long id) {
+        return employeeMapper.toDto(employeeService.setUnavailable(id));
     }
 
     // DELETE

@@ -11,7 +11,7 @@ import tn.itbs.Sujet10.service.OrderService;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class OrderController {
 
     @Autowired

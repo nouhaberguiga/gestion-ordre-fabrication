@@ -1,0 +1,183 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>👨‍💼 Employés</h3>
+
+  <button class="btn btn-primary" (click)="openCreate()">
+    + Nouveau
+  </button>
+</div>
+
+<!-- MESSAGE -->
+<div *ngIf="msg" class="alert alert-{{msgType}}">
+  {{ msg }}
+</div>
+
+<!-- FORMULAIRE -->
+<div *ngIf="showForm" class="card mb-4 p-3">
+
+  <h5>
+    {{ editing ? 'Modifier' : 'Nouvel' }} employé
+  </h5>
+
+  <div class="row g-2">
+
+    <!-- FIRST NAME -->
+    <div class="col-md-6">
+      <input
+        class="form-control"
+        placeholder="Prénom *"
+        [(ngModel)]="form.firstName"
+      />
+    </div>
+
+    <!-- LAST NAME -->
+    <div class="col-md-6">
+      <input
+        class="form-control"
+        placeholder="Nom *"
+        [(ngModel)]="form.lastName"
+      />
+    </div>
+
+    <!-- ROLE -->
+    <div class="col-md-6">
+      <input
+        class="form-control"
+        placeholder="Rôle *"
+        [(ngModel)]="form.role"
+      />
+    </div>
+
+    <!-- AVAILABLE -->
+    <div class="col-md-6 d-flex align-items-center">
+
+      <div class="form-check mt-2">
+
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [(ngModel)]="form.available"
+          id="available"
+        />
+
+        <label class="form-check-label" for="available">
+          Disponible
+        </label>
+
+      </div>
+
+    </div>
+
+    <!-- MACHINE -->
+    <div class="col-md-6">
+      <select
+        class="form-select"
+        [(ngModel)]="form.machineId"
+      >
+        <option [ngValue]="null">Aucune machine assignée</option>
+        <option *ngFor="let machine of machines" [ngValue]="machine.id">
+          {{ machine.name }} ({{ machine.status }})
+        </option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="mt-3 d-flex gap-2">
+
+    <button class="btn btn-success" (click)="save()">
+      Enregistrer
+    </button>
+
+    <button class="btn btn-secondary" (click)="showForm = false">
+      Annuler
+    </button>
+
+  </div>
+
+</div>
+
+<!-- TABLEAU -->
+<table class="table table-bordered table-hover">
+
+  <thead class="table-dark">
+
+    <tr>
+      <th>ID</th>
+      <th>Prénom</th>
+      <th>Nom</th>
+      <th>Rôle</th>
+      <th>Disponibilité</th>
+      <th>Machine assignée</th>
+      <th>Actions</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr *ngFor="let e of employees">
+
+      <td>{{ e.id }}</td>
+
+      <td>{{ e.firstName }}</td>
+
+      <td>{{ e.lastName }}</td>
+
+      <td>{{ e.role }}</td>
+
+      <!-- STATUS -->
+      <td>
+
+        <span
+          class="badge"
+          [class.bg-success]="e.available"
+          [class.bg-danger]="!e.available"
+        >
+          {{ e.available ? 'Disponible' : 'Indisponible' }}
+        </span>
+
+      </td>
+
+      <td>{{ getMachineName(e) }}</td>
+
+      <!-- ACTIONS -->
+      <td>
+
+        <button
+          class="btn btn-sm btn-warning me-1"
+          (click)="openEdit(e)"
+        >
+          Modifier
+        </button>
+
+        <button
+          class="btn btn-sm btn-danger me-1"
+          (click)="delete(e.id!)"
+        >
+          Supprimer
+        </button>
+
+        <button
+          class="btn btn-sm btn-info"
+          (click)="toggle(e)"
+        >
+          {{ e.available ? 'Désactiver' : 'Activer' }}
+        </button>
+
+      </td>
+
+    </tr>
+
+    <!-- EMPTY -->
+    <tr *ngIf="employees.length === 0">
+
+      <td colspan="7" class="text-center text-muted">
+        Aucun employé.
+      </td>
+
+    </tr>
+
+  </tbody>
+
+</table>

@@ -1,0 +1,215 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+  <h3>📋 Ordres de fabrication</h3>
+
+  <button class="btn btn-primary" (click)="openCreate()">
+    + Nouveau
+  </button>
+
+</div>
+
+<!-- MESSAGE -->
+<div *ngIf="msg" class="alert alert-{{msgType}}">
+  {{ msg }}
+</div>
+
+<!-- FORMULAIRE -->
+<div *ngIf="showForm" class="card mb-4 p-3">
+
+  <h5>
+    {{ editing ? 'Modifier' : 'Nouvel' }} ordre de fabrication
+  </h5>
+
+  <div class="row g-3">
+
+    <!-- PROJECT -->
+    <div class="col-md-6">
+      <label class="form-label">Projet *</label>
+      <input
+        class="form-control"
+        placeholder="Nom du projet"
+        [(ngModel)]="form.project"
+        required
+      />
+    </div>
+
+    <!-- QUANTITY -->
+    <div class="col-md-6">
+      <label class="form-label">Quantité *</label>
+      <input
+        class="form-control"
+        type="number"
+        placeholder="Quantité à produire"
+        [(ngModel)]="form.quantity"
+        min="1"
+        required
+      />
+    </div>
+
+    <!-- PRODUCT -->
+    <div class="col-md-6">
+      <label class="form-label">Produit *</label>
+      <select
+        class="form-select"
+        [(ngModel)]="form.productId"
+        required
+      >
+        <option [ngValue]="null">Sélectionner un produit</option>
+        <option *ngFor="let product of products" [ngValue]="product.id">
+          {{ product.name }} ({{ product.reference }})
+        </option>
+      </select>
+    </div>
+
+    <!-- MACHINE -->
+    <div class="col-md-6">
+      <label class="form-label">Machine *</label>
+      <select
+        class="form-select"
+        [(ngModel)]="form.machineId"
+        required
+      >
+        <option [ngValue]="null">Sélectionner une machine</option>
+        <option *ngFor="let machine of machines" [ngValue]="machine.id">
+          {{ machine.name }} ({{ machine.status }})
+        </option>
+      </select>
+    </div>
+
+    <!-- EMPLOYEES -->
+    <div class="col-12">
+      <label class="form-label">Employés assignés *</label>
+      <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+        <div *ngFor="let employee of employees" class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="'emp-' + employee.id"
+            [checked]="isEmployeeSelected(employee.id!)"
+            (change)="onEmployeeChange(employee.id!, $event.target.checked)"
+          />
+          <label class="form-check-label" [for]="'emp-' + employee.id">
+            {{ employee.firstName }} {{ employee.lastName }} - {{ employee.role }}
+            <span class="badge" [class.bg-success]="employee.available" [class.bg-secondary]="!employee.available">
+              {{ employee.available ? 'Disponible' : 'Indisponible' }}
+            </span>
+          </label>
+        </div>
+        <div *ngIf="employees.length === 0" class="text-muted">
+          Aucun employé disponible
+        </div>
+      </div>
+      <small class="text-muted">Sélectionnez au moins un employé</small>
+    </div>
+
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="mt-3 d-flex gap-2">
+    <button class="btn btn-success" (click)="save()">
+      {{ editing ? 'Modifier' : 'Créer' }} l'ordre
+    </button>
+    <button class="btn btn-secondary" (click)="showForm = false">
+      Annuler
+    </button>
+  </div>
+
+</div>
+
+<!-- TABLE -->
+<table class="table table-bordered table-hover">
+
+  <thead class="table-dark">
+
+    <tr>
+
+      <th>ID</th>
+      <th>Projet</th>
+      <th>Quantité</th>
+      <th>Produit</th>
+      <th>Machine</th>
+      <th>Employés machine</th>
+      <th>Statut</th>
+      <th>Actions</th>
+
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr *ngFor="let o of orders">
+
+      <td>{{ o.id }}</td>
+
+      <td>{{ o.project }}</td>
+
+      <td>{{ o.quantity }}</td>
+
+      <td>{{ o.productName }}</td>
+
+      <td>{{ o.machineName }}</td>
+
+      <td>{{ getEmployeesByMachineName(o.machineId) }}</td>
+
+      <!-- STATUS -->
+      <td>
+
+        <span
+          class="badge"
+          [class.bg-warning]="o.status === 'PENDING'"
+          [class.bg-primary]="o.status === 'IN_PROGRESS'"
+          [class.bg-success]="o.status === 'FINISHED'"
+        >
+          {{ o.status }}
+        </span>
+
+      </td>
+
+      <!-- ACTIONS -->
+      <td>
+
+        <button
+          class="btn btn-sm btn-warning me-1"
+          (click)="openEdit(o)"
+        >
+          Modifier
+        </button>
+
+        <button
+          class="btn btn-sm btn-danger me-1"
+          (click)="delete(o.id!)"
+        >
+          Supprimer
+        </button>
+
+        <button
+          class="btn btn-sm btn-info me-1"
+          (click)="start(o.id!)"
+        >
+          Start
+        </button>
+
+        <button
+          class="btn btn-sm btn-success"
+          (click)="finish(o.id!)"
+        >
+          Finish
+        </button>
+
+      </td>
+
+    </tr>
+
+    <!-- EMPTY -->
+    <tr *ngIf="orders.length === 0">
+
+      <td colspan="8" class="text-center text-muted">
+        Aucun ordre.
+      </td>
+
+    </tr>
+
+  </tbody>
+
+</table>

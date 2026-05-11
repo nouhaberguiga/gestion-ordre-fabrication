@@ -1,0 +1,65 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>📦 Produits</h3>
+  <button class="btn btn-primary" (click)="openCreate()">+ Nouveau</button>
+</div>
+
+<div *ngIf="msg" class="alert alert-{{msgType}}">{{ msg }}</div>
+
+<!-- FORMULAIRE -->
+<div *ngIf="showForm" class="card mb-4 p-3">
+  <h5>{{ editing ? 'Modifier' : 'Nouveau' }} produit</h5>
+  <form #productForm="ngForm" class="row g-2">
+    <div class="col-md-4">
+      <input class="form-control" name="name" placeholder="Nom *" [(ngModel)]="form.name" required />
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" name="type" placeholder="Type *" [(ngModel)]="form.type" required />
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" name="reference" placeholder="Référence *" [(ngModel)]="form.reference" required />
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" name="price" type="number" placeholder="Prix *" [(ngModel)]="form.price" required />
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" name="quantityStock" type="number" placeholder="Stock" [(ngModel)]="form.quantityStock" />
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" name="supplier" placeholder="Fournisseur *" [(ngModel)]="form.supplier" required />
+    </div>
+  </form>
+  <div class="mt-2 d-flex gap-2">
+    <button type="button" class="btn btn-success" (click)="save()">Enregistrer</button>
+    <button type="button" class="btn btn-secondary" (click)="showForm = false">Annuler</button>
+  </div>
+</div>
+
+<!-- TABLEAU -->
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>Nom</th><th>Type</th><th>Référence</th><th>Prix</th><th>Stock</th><th>Fournisseur</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of products">
+      <td>{{ p.name }}</td>
+      <td>{{ p.type }}</td>
+      <td>{{ p.reference }}</td>
+      <td>{{ p.price }} DT</td>
+      <td>
+        <span class="badge" [class.bg-success]="p.quantityStock > 0" [class.bg-danger]="p.quantityStock === 0">
+          {{ p.quantityStock }}
+        </span>
+      </td>
+      <td>{{ p.supplier }}</td>
+      <td>
+        <button class="btn btn-sm btn-warning me-1" (click)="openEdit(p)">Modifier</button>
+        <button class="btn btn-sm btn-danger" (click)="delete(p.id!)">Supprimer</button>
+      </td>
+    </tr>
+    <tr *ngIf="products.length === 0">
+      <td colspan="8" class="text-center text-muted">Aucun produit.</td>
+    </tr>
+  </tbody>
+</table>

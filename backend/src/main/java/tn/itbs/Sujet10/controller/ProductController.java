@@ -11,6 +11,7 @@ import tn.itbs.Sujet10.service.ProductService;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
     @Autowired

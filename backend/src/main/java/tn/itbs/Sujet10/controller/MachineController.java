@@ -10,8 +10,9 @@ import tn.itbs.Sujet10.mapper.MachineMapper;
 import tn.itbs.Sujet10.service.MachineService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/machines")
-@CrossOrigin("*")
+
 public class MachineController {
 
     @Autowired

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.itbs.Sujet10.entity.Employee;
+import tn.itbs.Sujet10.entity.Machine;
 import tn.itbs.Sujet10.repository.EmployeeRepository;
+import tn.itbs.Sujet10.repository.MachineRepository;
 
 @Service
 public class EmployeeService {
@@ -13,7 +15,15 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    private MachineRepository machineRepository;
+
     public Employee save(Employee e) {
+        return employeeRepository.save(e);
+    }
+
+    public Employee saveWithMachine(Employee e, Long machineId) {
+        e.setMachine(resolveMachine(machineId));
         return employeeRepository.save(e);
     }
 
@@ -34,6 +44,7 @@ public class EmployeeService {
             existing.setLastName(e.getLastName());
             existing.setRole(e.getRole());
             existing.setAvailable(e.isAvailable());
+            existing.setMachine(e.getMachine());
 
             return employeeRepository.save(existing);
         }
@@ -62,5 +73,19 @@ public class EmployeeService {
             return employeeRepository.save(e);
         }
         return null;
+    }
+
+    public Employee updateWithMachine(Long id, Employee e, Long machineId) {
+        e.setMachine(resolveMachine(machineId));
+        return update(id, e);
+    }
+
+    private Machine resolveMachine(Long machineId) {
+        if (machineId == null) {
+            return null;
+        }
+
+        return machineRepository.findById(machineId)
+                .orElseThrow(() -> new RuntimeException("Machine not found with id: " + machineId));
     }
 }

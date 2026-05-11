@@ -1,0 +1,63 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>🏭 Machines</h3>
+  <button class="btn btn-primary" (click)="openCreate()">+ Nouvelle</button>
+</div>
+
+<div *ngIf="msg" class="alert alert-{{msgType}}">{{ msg }}</div>
+
+<!-- FORMULAIRE -->
+<div *ngIf="showForm" class="card mb-4 p-3">
+  <h5>{{ editing ? 'Modifier' : 'Nouvelle' }} machine</h5>
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input class="form-control" placeholder="Nom *" [(ngModel)]="form.name" />
+    </div>
+    <div class="col-md-4">
+      <select class="form-select" [(ngModel)]="form.status">
+        <option value="AVAILABLE">Disponible</option>
+        <option value="IN_USE">En utilisation</option>
+        <option value="MAINTENANCE">Maintenance</option>
+        <option value="BROKEN">En panne</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <input class="form-control" type="date" placeholder="Dernière maintenance" [(ngModel)]="form.lastMaintenance" />
+    </div>
+  </div>
+  <div class="mt-2 d-flex gap-2">
+    <button class="btn btn-success" (click)="save()">Enregistrer</button>
+    <button class="btn btn-secondary" (click)="showForm = false">Annuler</button>
+  </div>
+</div>
+
+<!-- TABLEAU -->
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th><th>Nom</th><th>Statut</th><th>Dernière maintenance</th><th>Changer statut</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let m of machines">
+      <td>{{ m.id }}</td>
+      <td>{{ m.name }}</td>
+      <td><span class="badge" [ngClass]="badgeClass(m.status)">{{ m.status }}</span></td>
+      <td>{{ m.lastMaintenance || '—' }}</td>
+      <td>
+        <div class="btn-group btn-group-sm">
+          <button class="btn btn-outline-success" (click)="changeStatus(m.id!, 'available')">✅</button>
+          <button class="btn btn-outline-primary"  (click)="changeStatus(m.id!, 'in-use')">🔵</button>
+          <button class="btn btn-outline-warning"  (click)="changeStatus(m.id!, 'maintenance')">🔧</button>
+          <button class="btn btn-outline-danger"   (click)="changeStatus(m.id!, 'broken')">❌</button>
+        </div>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-warning me-1" (click)="openEdit(m)">Modifier</button>
+        <button class="btn btn-sm btn-danger" (click)="delete(m.id!)">Supprimer</button>
+      </td>
+    </tr>
+    <tr *ngIf="machines.length === 0">
+      <td colspan="6" class="text-center text-muted">Aucune machine.</td>
+    </tr>
+  </tbody>
+</table>

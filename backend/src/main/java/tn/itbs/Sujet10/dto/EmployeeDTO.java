@@ -18,6 +18,7 @@ public class EmployeeDTO {
     private boolean available;
 
     private Long machineId;
+    private String machineName;
 
     // GETTERS & SETTERS
 
@@ -38,4 +39,7 @@ public class EmployeeDTO {
 
     public Long getMachineId() { return machineId; }
     public void setMachineId(Long machineId) { this.machineId = machineId; }
+
+    public String getMachineName() { return machineName; }
+    public void setMachineName(String machineName) { this.machineName = machineName; }
 }

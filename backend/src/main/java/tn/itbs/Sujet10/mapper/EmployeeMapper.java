@@ -19,6 +19,7 @@ public class EmployeeMapper {
         dto.setAvailable(employee.isAvailable());
         if (employee.getMachine() != null) {
             dto.setMachineId(employee.getMachine().getId());
+            dto.setMachineName(employee.getMachine().getName());
         }
         return dto;
     }
@@ -26,7 +27,6 @@ public class EmployeeMapper {
     public Employee fromDto(EmployeeDTO dto) {
         if (dto == null) return null;
         Employee employee = new Employee();
-        employee.setId(dto.getId());
         employee.setFirstName(dto.getFirstName());
         employee.setLastName(dto.getLastName());
         employee.setRole(dto.getRole());
