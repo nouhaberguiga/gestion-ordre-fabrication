@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  url = 'http://localhost:8080/products';
+  url = environment.apiUrl + '/products';
   constructor(private http: HttpClient) {}
   getAll(): Observable<Product[]>         { return this.http.get<Product[]>(this.url); }
   getById(id: number): Observable<Product>{ return this.http.get<Product>(`${this.url}/${id}`); }

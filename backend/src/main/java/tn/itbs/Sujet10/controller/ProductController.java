@@ -10,7 +10,7 @@ import tn.itbs.Sujet10.entity.Product;
 import tn.itbs.Sujet10.service.ProductService;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 

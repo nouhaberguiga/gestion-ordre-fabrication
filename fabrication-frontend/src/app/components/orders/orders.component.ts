@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderService } from '../../services/order.service';
@@ -44,7 +44,8 @@ export class OrdersComponent implements OnInit {
     private orderService: OrderService,
     private productService: ProductService,
     private machineService: MachineService,
-    private employeeService: EmployeeService
+    private employeeService: EmployeeService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -56,28 +57,40 @@ export class OrdersComponent implements OnInit {
 
   load() {
     this.orderService.getAll().subscribe({
-      next: data => this.orders = data,
+      next: data => {
+        this.orders = data;
+        this.cdr.detectChanges();
+      },
       error: () => setTimeout(() => this.alert('Erreur de chargement', 'danger'), 100)
     });
   }
 
   loadProducts() {
     this.productService.getAll().subscribe({
-      next: data => this.products = data,
+      next: data => {
+        this.products = data;
+        this.cdr.detectChanges();
+      },
       error: () => setTimeout(() => this.alert('Erreur chargement produits', 'danger'), 100)
     });
   }
 
   loadMachines() {
     this.machineService.getAll().subscribe({
-      next: data => this.machines = data,
+      next: data => {
+        this.machines = data;
+        this.cdr.detectChanges();
+      },
       error: () => setTimeout(() => this.alert('Erreur chargement machines', 'danger'), 100)
     });
   }
 
   loadEmployees() {
     this.employeeService.getAll().subscribe({
-      next: data => this.employees = data,
+      next: data => {
+        this.employees = data;
+        this.cdr.detectChanges();
+      },
       error: () => setTimeout(() => this.alert('Erreur chargement employés', 'danger'), 100)
     });
   }
@@ -224,7 +237,11 @@ export class OrdersComponent implements OnInit {
   alert(text: string, type = 'success') {
     this.msg = text;
     this.msgType = type;
-    setTimeout(() => this.msg = '', 3000);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.msg = '';
+      this.cdr.detectChanges();
+    }, 3000);
   }
 
   // Helper methods for template

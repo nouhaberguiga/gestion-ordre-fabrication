@@ -9,4 +9,5 @@ public interface OrderRepository extends JpaRepository<OrderFabrication, Long> {
     List<OrderFabrication> findByStatus(OrderStatus status);
     List<OrderFabrication> findByProductId(Long productId);
     List<OrderFabrication> findByMachineId(Long machineId);
+    List<OrderFabrication> findByEmployeesId(Long employeeId);
 }

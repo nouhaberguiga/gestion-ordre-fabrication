@@ -4,15 +4,26 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.itbs.Sujet10.entity.Machine;
 import tn.itbs.Sujet10.entity.MachineStatus;
+import tn.itbs.Sujet10.entity.Employee;
+import tn.itbs.Sujet10.entity.OrderFabrication;
+import tn.itbs.Sujet10.repository.EmployeeRepository;
 import tn.itbs.Sujet10.repository.MachineRepository;
+import tn.itbs.Sujet10.repository.OrderRepository;
 
 @Service
 public class MachineService {
 
     @Autowired
     private MachineRepository machineRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     public Machine save(Machine m) {
         if (m.getStatus() == null) {
@@ -38,10 +49,24 @@ public class MachineService {
         return machineRepository.save(existing);
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!machineRepository.existsById(id)) {
             throw new RuntimeException("Machine not found with id: " + id);
         }
+
+        List<OrderFabrication> orders = orderRepository.findByMachineId(id);
+        for (OrderFabrication order : orders) {
+            order.getEmployees().clear();
+        }
+        orderRepository.deleteAll(orders);
+
+        List<Employee> employees = employeeRepository.findByMachineId(id);
+        for (Employee employee : employees) {
+            employee.setMachine(null);
+        }
+        employeeRepository.saveAll(employees);
+
         machineRepository.deleteById(id);
     }
 

@@ -3,11 +3,14 @@ package tn.itbs.Sujet10.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import tn.itbs.Sujet10.entity.Employee;
 import tn.itbs.Sujet10.entity.Machine;
+import tn.itbs.Sujet10.entity.OrderFabrication;
 import tn.itbs.Sujet10.repository.EmployeeRepository;
 import tn.itbs.Sujet10.repository.MachineRepository;
+import tn.itbs.Sujet10.repository.OrderRepository;
 
 @Service
 public class EmployeeService {
@@ -17,6 +20,9 @@ public class EmployeeService {
 
     @Autowired
     private MachineRepository machineRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     public Employee save(Employee e) {
         return employeeRepository.save(e);
@@ -52,7 +58,18 @@ public class EmployeeService {
         return null;
     }
 
+    @Transactional
     public void delete(Long id) {
+        if (!employeeRepository.existsById(id)) {
+            throw new RuntimeException("Employee not found with id: " + id);
+        }
+
+        List<OrderFabrication> orders = orderRepository.findByEmployeesId(id);
+        for (OrderFabrication order : orders) {
+            order.getEmployees().removeIf(employee -> employee.getId().equals(id));
+        }
+        orderRepository.saveAll(orders);
+
         employeeRepository.deleteById(id);
     }
 

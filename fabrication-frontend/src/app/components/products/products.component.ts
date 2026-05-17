@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
@@ -21,13 +21,19 @@ export class ProductsComponent implements OnInit {
   form: Product = { name: '', type: '', reference: '', price: 0, quantityStock: 0, supplier: '' };
   editId: number | null = null;
 
-  constructor(private service: ProductService) {}
+  constructor(
+    private service: ProductService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() { this.load(); }
 
   load() {
     this.service.getAll().subscribe({
-      next: data => this.products = data,
+      next: data => {
+        this.products = data;
+        this.cdr.detectChanges();
+      },
       error: () => this.alert('Erreur de chargement', 'danger')
     });
   }
@@ -72,6 +78,10 @@ export class ProductsComponent implements OnInit {
 
   alert(text: string, type = 'success') {
     this.msg = text; this.msgType = type;
-    setTimeout(() => this.msg = '', 3000);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.msg = '';
+      this.cdr.detectChanges();
+    }, 3000);
   }
 }

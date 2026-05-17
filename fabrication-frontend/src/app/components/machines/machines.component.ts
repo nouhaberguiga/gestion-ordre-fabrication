@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MachineService } from '../../services/machine.service';
@@ -21,13 +21,19 @@ export class MachinesComponent implements OnInit {
 
   form: Machine = { name: '', status: 'AVAILABLE', lastMaintenance: '' };
 
-  constructor(private service: MachineService) {}
+  constructor(
+    private service: MachineService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() { this.load(); }
 
   load() {
     this.service.getAll().subscribe({
-      next: data => this.machines = data,
+      next: data => {
+        this.machines = data;
+        this.cdr.detectChanges();
+      },
       error: () => setTimeout(() => this.alert('Erreur de chargement', 'danger'), 100)
     });
   }
@@ -81,6 +87,10 @@ export class MachinesComponent implements OnInit {
 
   alert(text: string, type = 'success') {
     this.msg = text; this.msgType = type;
-    setTimeout(() => this.msg = '', 3000);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.msg = '';
+      this.cdr.detectChanges();
+    }, 3000);
   }
 }

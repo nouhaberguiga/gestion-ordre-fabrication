@@ -1,0 +1,9 @@
+node_modules
+target
+.settings
+.classpath
+.factorypath
+.project
+.git
+.gitignore
+npm-debug.log

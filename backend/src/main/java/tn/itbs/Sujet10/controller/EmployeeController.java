@@ -13,7 +13,7 @@ import tn.itbs.Sujet10.dto.EmployeeDTO;
 import tn.itbs.Sujet10.mapper.EmployeeMapper;
 
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/api/employees")
 @CrossOrigin(origins = "http://localhost:4200")
 public class EmployeeController {
 

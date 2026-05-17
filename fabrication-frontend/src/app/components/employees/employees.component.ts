@@ -36,14 +36,20 @@ export class EmployeesComponent implements OnInit {
 
   load() {
     this.service.getAll().subscribe({
-      next: data => this.employees = data,
+      next: data => {
+        this.employees = data;
+        this.cdr.detectChanges();
+      },
       error: () => setTimeout(() => this.alert('Erreur de chargement', 'danger'))
     });
   }
 
   loadMachines() {
     this.machineService.getAll().subscribe({
-      next: data => this.machines = data,
+      next: data => {
+        this.machines = data;
+        this.cdr.detectChanges();
+      },
       error: () => setTimeout(() => this.alert('Erreur chargement machines', 'danger'))
     });
   }
